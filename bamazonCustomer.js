@@ -50,25 +50,42 @@ function purchaseOrder(dbInfo) {
       }
     }
   ]).then(function (userInput) {
-    var ident = userInput.identifier;
-    var quant = userInput.amount;
-    updateDB(ident, quant);
+    updateDB(dbInfo, userInput.identifier, userInput.amount);
   });
 }
 
-function updateDB(id, amnt) {
-  if (dbInfo[id - 1].stock_quantity < amnt) {
+function updateDB(products, id, amnt) {
+  var totalPrice = products[id - 1].price * amnt;
+  if (products[id - 1].stock_quantity < amnt) {
     console.log("Insufficient Quantity!");
   } else {
-    connection.query("UPDATE products SET ? WHERE ?", [{
-      stock_quantity: dbInfo[id - 1].stock_quantity - amnt
-    }, {
-      item_id: id
-    }], function (err, res) {
+    connection.query("UPDATE products SET ? ,? WHERE ?", [{
+        stock_quantity: products[id - 1].stock_quantity - amnt
+      },
+      {
+        product_sales: products[id - 1].product_sales + (totalPrice)
+      },
+      {
+        item_id: id
+      }
+    ], function (err, res) {
       if (err) throw err;
     });
 
-    console.log("\nTotal Cost: " + (dbInfo[id - 1].price * amnt) + "\nSuccessful Transaction");
-    connection.end();
+    console.log("\nTotal Cost: $" + (totalPrice.toFixed(2)) + "\nSuccessful Transaction");
   }
+  inquirer.prompt([{
+    type: "confirm",
+    message: "Would you like to  try making another purchase?",
+    name: "again",
+    default: false
+  }]).then(function (userInput) {
+    if (userInput.again) {
+      connection.query("SELECT * FROM products", function (err, res) {
+        purchaseOrder(res);
+      });
+    } else {
+      connection.end();
+    }
+  })
 }

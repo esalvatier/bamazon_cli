@@ -16,33 +16,38 @@ var connection = mysql.createConnection({
   database: "bamazon_db"
 });
 
-var options = [{
-  type: "list",
-  message: "What do you want to do?",
-  name: "action",
-  choices: [{
-      name: "View Products for Sale",
-      value: "sale"
-    },
-    {
-      name: "View Low Inventory",
-      value: "inventory"
-    },
-    {
-      name: "Add to Inventory",
-      value: "add"
-    },
-    {
-      name: "Add New Product",
-      value: "new"
-    }
-  ]
-}];
+function mainPrompt() {
+  var options = [{
+    type: "list",
+    message: "What do you want to do?",
+    name: "action",
+    choices: [{
+        name: "View Products for Sale",
+        value: "sale"
+      },
+      {
+        name: "View Low Inventory",
+        value: "inventory"
+      },
+      {
+        name: "Add to Inventory",
+        value: "add"
+      },
+      {
+        name: "Add New Product",
+        value: "new"
+      },
+      {
+        name: "Exit",
+        value: "exit"
+      }
+    ]
+  }];
 
-inquirer.prompt(options).then(function (userInput) {
-  doThingToDB(userInput.action);
-});
-
+  inquirer.prompt(options).then(function (userInput) {
+    doThingToDB(userInput.action);
+  });
+}
 
 function doThingToDB(action) {
   switch (action) {
@@ -58,76 +63,70 @@ function doThingToDB(action) {
     case "new":
       addProduct();
       break;
+    case "exit":
+      connection.end();
+      break;
   }
 };
 
 function productDisplay() {
-  connection.connect(function (err) {
+  connection.query("SELECT * FROM products", function (err, res) {
     if (err) throw err;
-    connection.query("SELECT * FROM products", function (err, res) {
-      if (err) throw err;
-      res.forEach(product => {
-        console.log("ID: " + product.item_id + " | Name: " + product.product_name + " | Price: $" + product.price + " | Quantity: " + product.stock_quantity);
-        limit = product.item_id;
-      });
-      console.log("\n");
-      connection.end()
+    res.forEach(product => {
+      console.log("ID: " + product.item_id + " | Name: " + product.product_name + " | Price: $" + product.price + " | Quantity: " + product.stock_quantity);
+      limit = product.item_id;
     });
+    console.log("\n");
+    mainPrompt();
   });
 };
 
 function lowProduct() {
-  connection.connect(function (err) {
+  connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
     if (err) throw err;
-    connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
-      if (err) throw err;
-      res.forEach(product => {
-        console.log("ID: " + product.item_id + " | Name: " + product.product_name + " | Price: $" + product.price);
-        limit = product.item_id;
-      });
-      console.log("\n");
-      connection.end()
+    res.forEach(product => {
+      console.log("ID: " + product.item_id + " | Name: " + product.product_name + " | Price: $" + product.price);
+      limit = product.item_id;
     });
+    console.log("\n");
+    mainPrompt();
   });
 };
 
 function addInventory() {
   var productList = []
-  connection.connect(function (err) {
+  connection.query("SELECT * FROM products", function (err, res) {
     if (err) throw err;
-    connection.query("SELECT * FROM products", function (err, res) {
-      if (err) throw err;
-      res.forEach(product => {
-        productList.push(product);
-      });
+    res.forEach(product => {
+      productList.push(product);
     });
-    inquirer.prompt([{
-        message: "Enter the ID of the product you wish to add inventory too: ",
-        name: "id",
-        validate: function (input) {
-          return (/^[0-9]/g.test(input));
-        }
-      },
-      {
-        message: "How much of the product do you want add?",
-        name: "amnt",
-        validate: function (input) {
-          return (/^[0-9]/g.test(input));
-        }
-      }
-    ]).then(function (userInput) {
-
-      connection.query("UPDATE products SET ? WHERE ?", [{
-        stock_quantity: (productList[userInput.id - 1].stock_quantity + parseInt(userInput.amnt))
-      }, {
-        item_id: userInput.id
-      }], function (err, res) {
-        if (err) throw err;
-      });
-      connection.end()
-      console.log("Inventory Successfully Added");
-    })
   });
+  inquirer.prompt([{
+      message: "Enter the ID of the product you wish to add inventory too: ",
+      name: "id",
+      validate: function (input) {
+        return (/^[0-9]/g.test(input));
+      }
+    },
+    {
+      message: "How much of the product do you want add?",
+      name: "amnt",
+      validate: function (input) {
+        return (/^[0-9]/g.test(input));
+      }
+    }
+  ]).then(function (userInput) {
+
+    connection.query("UPDATE products SET ? WHERE ?", [{
+      stock_quantity: (productList[userInput.id - 1].stock_quantity + parseInt(userInput.amnt))
+    }, {
+      item_id: userInput.id
+    }], function (err, res) {
+      if (err) throw err;
+    });
+    console.log("Inventory Successfully Added\n");
+    mainPrompt();
+  })
 }
 
 function addProduct() {
@@ -147,10 +146,10 @@ function addProduct() {
       }
     },
     {
-      message: "What price should the product be sold for? (no greater than 99999999.99)",
+      message: "What price should the product be sold for? (must come in decimal format)",
       name: "price",
       validate: function (input) {
-        return (/(\d{1,8})+\.{1}\d{1,2}/.test(input));
+        return (/^(\d{1,8})+\.{1}(\d{1,2})$/g.test(input)) && (input.length > 11);
       }
     },
     {
@@ -165,8 +164,12 @@ function addProduct() {
     info.push(userInput.product_name, userInput.department_name, userInput.price, userInput.stock_quantity);
     connection.query(sql, info, function (err, res) {
       if (err) throw err;
-      connection.end();
-      console.log("Product Successfully Added!");
+      console.log("Product Successfully Added!\n");
     });
+    mainPrompt();
   });
 }
+connection.connect(function (err) {
+  if (err) throw err;
+  mainPrompt();
+});

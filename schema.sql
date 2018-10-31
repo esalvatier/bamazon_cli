@@ -7,9 +7,17 @@ CREATE TABLE products(
   item_id INT NOT NULL AUTO_INCREMENT,
   product_name VARCHAR(60) NOT NULL,
   department_name VARCHAR(30) NOT NULL,
-  price DECIMAL(10,2) NOT NULL,
+  price DECIMAL(11,2) NOT NULL,
   stock_quantity INT NOT NULL DEFAULT 0,
+  product_sales DECIMAL(20,2) NOT NULL DEFAULT 0,
   PRIMARY KEY (item_id)
+);
+
+CREATE TABLE departments (
+  department_id INT NOT NULL AUTO_INCREMENT,
+  department_name VARCHAR(60) NOT NULL,
+  over_head_costs DECIMAL(20,2) NOT NULL DEFAULT 0,
+  PRIMARY KEY (department_id)
 );
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
@@ -41,3 +49,24 @@ VALUE ("Pew! Pew! Pew!: American Revolution 2", "Video Games", 58.99, 61000);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUE ("Rogkthar's Revenge: Into the Misty Valley", "Books", 19.99, 21000);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUE ("Books", 13000.00);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUE ("Clothes", 29000.00);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUE ("Electronics", 91000.00);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUE ("Food", 7000.00);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUE ("Personal Care", 53000.00);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUE ("Sports & Athletic Equipment", 171910.00);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUE ("Video Games", 26090.00);
