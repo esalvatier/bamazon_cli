@@ -39,14 +39,14 @@ function purchaseOrder(dbInfo) {
       message: "What is the ID of the product your are look got purchase?",
       name: "identifier",
       validate: function (input) {
-        return (/^[0-9]/g.test(input) && input <= limit);
+        return (/^\d{1}/g.test(input) && input <= limit);
       }
     },
     {
       message: "How many would you like to buy?",
       name: "amount",
       validate: function (input) {
-        return (/^[0-9]/g.test(input));
+        return (/^\d/g.test(input));
       }
     }
   ]).then(function (userInput) {

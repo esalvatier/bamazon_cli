@@ -50,10 +50,12 @@ function superVisorPrompt() {
 }
 
 function viewDepartments() {
-  connection.query("SELECT department_id, departments.department_name, over_head_costs, SUM(product_sales) AS product_sales, (product_sales - over_head_costs) AS total_profits FROM departments LEFT JOIN products ON products.department_name = departments.department_name GROUP BY departments.department_id", function (err, res) {
+  connection.query("SELECT department_id, departments.department_name, over_head_costs, SUM(product_sales) AS product_sales, (product_sales - over_head_costs) AS total_profits FROM departments RIGHT JOIN products ON products.department_name = departments.department_name GROUP BY departments.department_id", function (err, res) {
     if (err) throw err;
     var headers = ["department_id", "department_name", "over_head_costs", "product_sales", "total_profits"];
     console.log("| " + headers.join(" | ") + " |");
+    var separators = ["-------------", "---------------", "---------------", "-------------", "-------------"];
+    console.log("| " + separators.join(" | ") + " |");
     res.forEach(department => {
       var id = "";
       if (department.department_id <= 9) {
@@ -91,6 +93,9 @@ function newDeparment() {
 }
 
 function pad(str, padding) {
+  if (!str) {
+    str = "";
+  }
   return String(padding + str).slice(-padding.length);
 }
 

@@ -52,10 +52,10 @@ function mainPrompt() {
 function doThingToDB(action) {
   switch (action) {
     case "sale":
-      productDisplay();
+      selectProducts(">= 0", false);
       break;
     case "inventory":
-      lowProduct();
+      selectProducts("<= 4", true);
       break;
     case "add":
       addInventory();
@@ -74,24 +74,26 @@ function productDisplay() {
     if (err) throw err;
     res.forEach(product => {
       console.log("ID: " + product.item_id + " | Name: " + product.product_name + " | Price: $" + product.price + " | Quantity: " + product.stock_quantity);
-      limit = product.item_id;
     });
     console.log("\n");
     mainPrompt();
   });
 };
 
-function lowProduct() {
-  connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
+function selectProducts(limiter, low) {
+  connection.query("SELECT * FROM products WHERE stock_quantity " + limiter, function (err, res) {
     if (err) throw err;
     res.forEach(product => {
-      console.log("ID: " + product.item_id + " | Name: " + product.product_name + " | Price: $" + product.price);
-      limit = product.item_id;
+      var tempStr = "ID: " + product.item_id + " | Name: " + product.product_name + " | Price: $" + product.price;
+      if (low) {
+        tempStr += " | # in Stock: " + product.stock_quantity;
+      }
+      console.log(tempStr);
     });
     console.log("\n");
     mainPrompt();
   });
-};
+}
 
 function addInventory() {
   var productList = []
@@ -149,7 +151,7 @@ function addProduct() {
       message: "What price should the product be sold for? (must come in decimal format)",
       name: "price",
       validate: function (input) {
-        return (/^(\d{1,8})+\.{1}(\d{1,2})$/g.test(input)) && (input.length > 11);
+        return (/^(\d{1,8})+\.{1}(\d{1,2})$/g.test(input));
       }
     },
     {
