@@ -20,35 +20,35 @@ CREATE TABLE departments (
   PRIMARY KEY (department_id)
 );
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUE ("EYEPhone", "Electronics", 389.95, 300);
+INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
+VALUE ("EYEPhone", "Electronics", 389.95, 300, 10000);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUE ("Bulk Deodorant (300 Count)", "Personal Care", 1215.00, 50);
+INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
+VALUE ("Bulk Deodorant (300 Count)", "Personal Care", 1215.00, 50, 500);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUE ("Wireless Computer", "Electronics", 879.55, 3);
+INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
+VALUE ("Wireless Computer", "Electronics", 879.55, 3, 13005);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUE ("Frontless Dress", "Clothes", 6.99, 10000);
+INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
+VALUE ("Frontless Dress", "Clothes", 6.99, 10000, 6990);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUE ("Hoverboard", "Sports & Athletic Equipment", 22.35, 71);
+INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
+VALUE ("Hoverboard", "Sports & Athletic Equipment", 22.35, 71, 5000.70);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUE ("Frozen Hearty Meals: Gooey Ooey Cheese Steak", "Food", 12.75, 641);
+INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
+VALUE ("Frozen Hearty Meals: Gooey Ooey Cheese Steak", "Food", 12.75, 641, 800.50);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUE ("Frozen Hearty Meals: Not Horse Meat", "Food", 7.85, 752);
+INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
+VALUE ("Frozen Hearty Meals: Not Horse Meat", "Food", 7.85, 752, 1000.75);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUE ("Ocean Spice Man Smell", "Personal Care", 19.25, 197);
+INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
+VALUE ("Ocean Spice Man Smell", "Personal Care", 19.25, 197, 800);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUE ("Pew! Pew! Pew!: American Revolution 2", "Video Games", 58.99, 61000);
+INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
+VALUE ("Pew! Pew! Pew!: American Revolution 2", "Video Games", 58.99, 61000, 33000);
 
-INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUE ("Rogkthar's Revenge: Into the Misty Valley", "Books", 19.99, 21000);
+INSERT INTO products (product_name, department_name, price, stock_quantity, product_sales)
+VALUE ("Rogkthar's Revenge: Into the Misty Valley", "Books", 19.99, 21000, 47550.25);
 
 INSERT INTO departments (department_name, over_head_costs)
 VALUE ("Books", 13000.00);
