@@ -81,7 +81,7 @@ function newDeparment() {
       message: "What is the over head cost for the department? (must come in decimal format)",
       name: "overhead",
       validate: function (input) {
-        return (/^(\d{1,18})+\.{1}(\d{1,2})$/g.test(input)) && (input.length <= 21);
+        return (/^(\d{1,18})+\.{1}(\d{1,2})$/g.test(input));
       }
     }
   ]).then(function (userIput) {
